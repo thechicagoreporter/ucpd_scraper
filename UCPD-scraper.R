@@ -1,19 +1,16 @@
-setwd("G:/REPORTER/Jonah/UCPD/reports")
 library(rvest)
 
-
-#to iterate for different report types, sub in "incidentReport" and "fieldInterviews" for "trafficStops"
-today <- format(Sys.Date(), "%m/%d/%y")
+#to iterate for different report types, sub in "incidentReport", "fieldInterviews" or "trafficStops" for reportType
 reportType <- "incidentReport"
-#get reports from 01/01/2016 to today
-myurl <- paste0("https://incidentreports.uchicago.edu/",reportType,"Archive.php?startDate=01%2F01%2F2016&endDate=", today)
+today <- format(Sys.Date(), "%m/%d/%y")
+startdate <- #Add desired start date here in mm/dd/yyyy format. Data was first released on 6/1/2015.
+myurl <- paste0("https://incidentreports.uchicago.edu/",reportType,"Archive.php?startDate=",startdate,"&endDate=",today)
 filename = paste0(reportType,".html")
 download.file(myurl, destfile=filename)
 myhtml <- readChar(filename, file.info(filename)$size)
 myhtml <- gsub("</tr>", "</tr><tr>", myhtml, fixed = TRUE)
 mydata <- read_html(myhtml)
 
-# first data frame
 mydf <- mydata %>%
   html_node("table") %>%
   html_table(fill = TRUE)
